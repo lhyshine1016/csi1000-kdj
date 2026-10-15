@@ -1,0 +1,222 @@
+<title>中证1000 KDJ 信号明细</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg:      #0d1117;
+  --panel:   #161b22;
+  --border:  #30363d;
+  --fg:      #e6edf3;
+  --fg2:     #8b949e;
+  --c-warn:  #c084fc;
+  --c-buya:  #34d399;
+  --c-buyb:  #fb923c;
+  --wc-warn: #fb923c;
+  --wc-buya: #fbbf24;
+  --wc-buyb: #f59e0b;
+  --c-div:   #22d3ee;
+  --row-hover: #21262d;
+  --num: "IBM Plex Mono", "Courier New", monospace;
+  --body: "Noto Sans SC", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:#f3f4f6;--panel:#fff;--border:#d1d5db;
+    --fg:#111827;--fg2:#6b7280;--row-hover:#f9fafb;
+  }
+}
+:root[data-theme="light"] {
+  --bg:#f3f4f6;--panel:#fff;--border:#d1d5db;
+  --fg:#111827;--fg2:#6b7280;--row-hover:#f9fafb;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;padding:20px 16px 40px;min-height:100vh}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-bottom:16px}
+header h1{font-size:16px;font-weight:600;letter-spacing:.02em}
+header span{font-size:12px;color:var(--fg2)}
+
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;border:1.5px solid var(--border);background:transparent;color:var(--fg2);font-size:12px;font-family:var(--body);cursor:pointer;transition:all .15s}
+.chip .dot{width:7px;height:7px;border-radius:50%}
+.chip.active{background:var(--panel);color:var(--fg);border-color:currentColor}
+.chip[data-type="日线C警示"].active{color:var(--c-warn)}
+.chip[data-type="日线买A"].active{color:var(--c-buya)}
+.chip[data-type="日线买B"].active{color:var(--c-buyb)}
+.chip[data-type="周线C警示"].active{color:var(--wc-warn)}
+.chip[data-type="周线买A"].active{color:var(--wc-buya)}
+.chip[data-type="周线买B"].active{color:var(--wc-buyb)}
+.chip[data-type="底背离"].active{color:var(--c-div)}
+
+.tbl-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:580px}
+thead th{position:sticky;top:0;background:var(--panel);padding:10px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--fg2);border-bottom:1px solid var(--border);white-space:nowrap}
+thead th.num{text-align:right}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--row-hover)}
+tbody tr[hidden]{display:none}
+td{padding:9px 14px;white-space:nowrap}
+td.date{font-family:var(--num);font-size:13px;color:var(--fg2)}
+td.num{font-family:var(--num);font-size:13px;text-align:right}
+td.buy-price{font-family:var(--num);font-size:13px;font-weight:500;text-align:right}
+td.dash{color:var(--border);text-align:right;font-family:var(--num);font-size:13px}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:.02em;background:color-mix(in srgb,var(--tc) 15%,transparent);color:var(--tc);border:1px solid color-mix(in srgb,var(--tc) 30%,transparent)}
+.badge-日线C警示{--tc:var(--c-warn)}
+.badge-日线买A{--tc:var(--c-buya)}
+.badge-日线买B{--tc:var(--c-buyb)}
+.badge-周线C警示{--tc:var(--wc-warn)}
+.badge-周线买A{--tc:var(--wc-buya)}
+.badge-周线买B{--tc:var(--wc-buyb)}
+.badge-底背离{--tc:var(--c-div)}
+
+/* round suffix / star */
+.suffix{font-size:10px;opacity:.75;font-family:var(--num);vertical-align:super;margin-left:2px}
+.star{font-size:11px;margin-left:2px}
+
+.note{font-size:11px;color:var(--fg2);margin-top:12px}
+</style>
+
+<header>
+  <h1>中证1000 KDJ 信号明细</h1>
+  <span>2024-09-01 起 &nbsp;·&nbsp; 日线C/买点按轮次编号，周线信号★标注，买点显示次日实际买入价</span>
+</header>
+
+<div class="filters">
+  <button class="chip active" data-type="all">全部</button>
+  <button class="chip active" data-type="日线C警示"><span class="dot" style="background:var(--c-warn)"></span>日线C警示</button>
+  <button class="chip active" data-type="日线买A"><span class="dot" style="background:var(--c-buya)"></span>日线买A</button>
+  <button class="chip active" data-type="日线买B"><span class="dot" style="background:var(--c-buyb)"></span>日线买B</button>
+  <button class="chip active" data-type="周线C警示"><span class="dot" style="background:var(--wc-warn)"></span>周线C警示★</button>
+  <button class="chip active" data-type="周线买A"><span class="dot" style="background:var(--wc-buya)"></span>周线买A★</button>
+  <button class="chip active" data-type="周线买B"><span class="dot" style="background:var(--wc-buyb)"></span>周线买B★</button>
+  <button class="chip active" data-type="底背离"><span class="dot" style="background:var(--c-div)"></span>底背离</button>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead>
+  <tr>
+    <th>日期</th>
+    <th>类型</th>
+    <th class="num">开盘价</th>
+    <th class="num">收盘价</th>
+    <th class="num">实际买入价（次日开盘）</th>
+  </tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<p class="note">* 日线信号按C→买入周期编轮次（_1起），同轮多个C均标同一编号；周线信号加★；底背离无轮次。实际买入价取买点告警次日开盘。</p>
+
+<script>
+// [date, baseType, open, close, buyPrice, round]
+// round: number = 日线轮次，null = 周线/底背离
+const ROWS = [
+  ["2024-09-18","底背离",4414,4399,null,null],
+  ["2024-09-20","周线C警示",4484,4463,null,null],
+  ["2024-09-20","周线买A",4484,4463,4463,null],
+  ["2024-11-19","日线C警示",5978,6130,null,1],
+  ["2024-11-21","日线买A",6241,6262,6240,1],
+  ["2024-12-19","日线C警示",6127,6207,null,null],
+  ["2024-12-24","日线C警示",6111,6164,null,null],
+  ["2025-01-06","日线C警示",5614,5608,null,2],
+  ["2025-01-07","日线买A",5611,5692,5664,2],
+  ["2025-01-10","底背离",5663,5545,null,null],
+  ["2025-01-17","周线C警示",5781,5842,null,null],
+  ["2025-01-24","周线买A",5815,5938,5947,null],
+  ["2025-02-07","周线买B",6046,6134,6155,null],
+  ["2025-03-26","日线C警示",6297,6335,null,null],
+  ["2025-03-31","日线C警示",6230,6227,null,3],
+  ["2025-04-01","日线买A",6242,6259,6253,3],
+  ["2025-04-09","日线买A",5439,5652,5767,3],
+  ["2025-05-26","日线C警示",5992,6029,null,null],
+  ["2025-05-29","日线C警示",5981,6090,null,null],
+  ["2025-06-23","日线C警示",5966,6078,null,null],
+  ["2025-09-05","日线C警示",7047,7246,null,null],
+  ["2025-10-21","日线C警示",7257,7344,null,null],
+  ["2025-11-24","日线C警示",7106,7156,null,4],
+  ["2025-11-26","日线买A",7237,7248,7244,4],
+  ["2025-12-12","周线买A",7313,7371,7324,null],
+  ["2025-12-16","底背离",7302,7182,null,null],
+  ["2026-02-03","日线C警示",8059,8209,null,5],
+  ["2026-02-09","日线买A",8177,8234,8246,5],
+  ["2026-03-05","日线C警示",8235,8171,null,null],
+  ["2026-03-24","日线C警示",7539,7601,null,6],
+  ["2026-03-25","日线买A",7655,7751,7734,6],
+  ["2026-04-10","周线C警示",7982,7998,null,null],
+  ["2026-04-17","周线买A",8226,8307,8308,null],
+  ["2026-06-02","日线C警示",8361,8385,null,7],
+  ["2026-06-03","日线买A",8387,8433,8339,7],
+  ["2026-06-08","底背离",8069,8081,null,null],
+  ["2026-07-09","日线C警示",8162,8300,null,null],
+  ["2026-07-14","日线C警示",7800,7925,null,null],
+  ["2026-07-20","日线C警示",7256,6965,null,8],
+  ["2026-07-21","日线买A",6976,7260,7197,8],
+  ["2026-07-30","底背离",7053,6901,null,null],
+  ["2026-07-31","周线C警示",7083,7076,null,null],
+  ["2026-08-07","周线买A",7534,7680,7723,null],
+  ["2026-08-25","日线C警示",7421,7527,null,9],
+  ["2026-08-27","日线买A",7551,7733,7734,9],
+  ["2026-09-11","底背离",7505,7427,null,null],
+  ["2026-10-09","日线C警示",7108,7156,null,null],
+  ["2026-10-13","日线C警示",6895,7023,null,null],
+];
+
+const tbody = document.getElementById("tbody");
+const active = new Set(["all","日线C警示","日线买A","日线买B","周线C警示","周线买A","周线买B","底背离"]);
+
+function labelFor(baseType, round) {
+  const isWeekly = baseType.startsWith("周线");
+  const isDaily  = baseType.startsWith("日线");
+  let text = baseType;
+  let suffix = "";
+  if (isDaily && round != null) {
+    suffix = `<span class="suffix">_${round}</span>`;
+  } else if (isWeekly) {
+    suffix = `<span class="star">★</span>`;
+  }
+  return `<span class="badge badge-${baseType}">${text}${suffix}</span>`;
+}
+
+function render() {
+  tbody.innerHTML = "";
+  ROWS.forEach(([date, type, open, close, buyPrice, round]) => {
+    if (!active.has("all") && !active.has(type)) return;
+    const tr = document.createElement("tr");
+    tr.dataset.type = type;
+    const isBuy = type.includes("买");
+    const isWeekly = type.startsWith("周线");
+    const buyColor = isWeekly ? "var(--wc-buya)" : "var(--c-buya)";
+    tr.innerHTML = `
+      <td class="date">${date}</td>
+      <td>${labelFor(type, round)}</td>
+      <td class="num">${open.toLocaleString()}</td>
+      <td class="num">${close.toLocaleString()}</td>
+      <td class="${isBuy ? 'buy-price' : 'dash'}" style="${isBuy ? `color:${buyColor}` : ''}">${buyPrice ? buyPrice.toLocaleString() : '—'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    const t = chip.dataset.type;
+    if (t === "all") {
+      if (active.has("all")) {
+        active.clear();
+        document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      } else {
+        document.querySelectorAll(".chip").forEach(c => { active.add(c.dataset.type); c.classList.add("active"); });
+      }
+    } else {
+      active.delete("all");
+      document.querySelector('.chip[data-type="all"]').classList.remove("active");
+      if (active.has(t)) { active.delete(t); chip.classList.remove("active"); }
+      else { active.add(t); chip.classList.add("active"); }
+    }
+    render();
+  });
+});
+
+render();
+</script>
